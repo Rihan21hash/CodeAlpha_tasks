@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Nexus — A minimal social media platform to connect, share, and engage with others." />
+  <title>Nexus — Social</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════ AUTH VIEW ═══════════════════════════ -->
+  <div id="view-auth" class="view active">
+    <div class="auth-container">
+      <div class="auth-brand">
+        <div class="brand-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          </svg>
+        </div>
+        <span class="brand-name">Nexus</span>
+      </div>
+
+      <!-- Tab switcher -->
+      <div class="auth-tabs" role="tablist">
+        <button id="tab-login"    class="auth-tab active" role="tab" aria-selected="true"  onclick="App.Auth.switchTab('login')">Sign In</button>
+        <button id="tab-register" class="auth-tab"        role="tab" aria-selected="false" onclick="App.Auth.switchTab('register')">Create Account</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="form-login" class="auth-form" onsubmit="App.Auth.login(event)" novalidate>
+        <div class="field-group">
+          <label for="login-username">Username</label>
+          <input id="login-username" type="text" placeholder="Enter your username" autocomplete="username" required />
+        </div>
+        <div class="field-group">
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
+        </div>
+        <p id="login-error" class="form-error" role="alert"></p>
+        <button type="submit" class="btn-primary btn-full" id="login-submit-btn">Sign In</button>
+        <p class="auth-hint">Demo accounts: <strong>alice</strong> / <strong>bob</strong> (password: <strong>pass123</strong>)</p>
+      </form>
+
+      <!-- Register Form -->
+      <form id="form-register" class="auth-form hidden" onsubmit="App.Auth.register(event)" novalidate>
+        <div class="field-group">
+          <label for="reg-displayname">Display Name</label>
+          <input id="reg-displayname" type="text" placeholder="Your full name" maxlength="40" required />
+        </div>
+        <div class="field-group">
+          <label for="reg-username">Username</label>
+          <input id="reg-username" type="text" placeholder="Choose a unique username" autocomplete="username" maxlength="20" required />
+        </div>
+        <div class="field-group">
+          <label for="reg-bio">Bio <span class="label-optional">(optional)</span></label>
+          <input id="reg-bio" type="text" placeholder="A short bio about yourself" maxlength="160" />
+        </div>
+        <div class="field-group">
+          <label for="reg-password">Password</label>
+          <input id="reg-password" type="password" placeholder="At least 6 characters" autocomplete="new-password" minlength="6" required />
+        </div>
+        <p id="register-error" class="form-error" role="alert"></p>
+        <button type="submit" class="btn-primary btn-full" id="register-submit-btn">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ MAIN APP SHELL ═══════════════════════════ -->
+  <div id="view-app" class="view hidden">
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          </svg>
+        </div>
+        <span class="brand-name">Nexus</span>
+      </div>
+
+      <ul class="nav-links" role="list">
+        <li>
+          <button class="nav-item active" id="nav-feed" onclick="App.Router.go('feed')" aria-label="Home feed">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Home</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" id="nav-discover" onclick="App.Router.go('discover')" aria-label="Discover users">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span>Discover</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" id="nav-create" onclick="App.Router.go('create')" aria-label="Create new post">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+            <span>New Post</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item" id="nav-profile" onclick="App.Router.go('profile')" aria-label="Your profile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Profile</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="current-user-card" id="sidebar-user-card">
+          <div class="avatar sm" id="sidebar-avatar"></div>
+          <div class="user-meta">
+            <span class="user-display-name" id="sidebar-displayname"></span>
+            <span class="user-handle" id="sidebar-handle"></span>
+          </div>
+        </div>
+        <button class="btn-ghost btn-icon" onclick="App.Auth.logout()" aria-label="Sign out" title="Sign out">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile Top Bar -->
+    <header class="mobile-header" id="mobile-header">
+      <div class="brand-icon">
+        <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="1.5"/><path d="M8 14 L14 8 L20 14 L14 20 Z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+      </div>
+      <span class="brand-name">Nexus</span>
+      <div class="mobile-actions">
+        <button class="btn-ghost btn-icon" onclick="App.Auth.logout()" aria-label="Sign out">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-area" id="main-area">
+
+      <!-- ── FEED VIEW ── -->
+      <section id="page-feed" class="page active">
+        <div class="page-header">
+          <h1 class="page-title">Home</h1>
+          <div class="feed-tabs" role="tablist">
+            <button class="feed-tab active" id="ftab-following" role="tab" onclick="App.Feed.switchTab('following')">Following</button>
+            <button class="feed-tab"        id="ftab-all"       role="tab" onclick="App.Feed.switchTab('all')">All Posts</button>
+          </div>
+        </div>
+        <div id="feed-list" class="post-list" role="list" aria-label="Posts feed">
+          <div class="empty-state">
+            <div class="empty-icon">◌</div>
+            <p>Loading...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── DISCOVER VIEW ── -->
+      <section id="page-discover" class="page hidden">
+        <div class="page-header">
+          <h1 class="page-title">Discover</h1>
+        </div>
+        <div class="search-bar-wrap">
+          <input type="search" id="discover-search" placeholder="Search users..." oninput="App.Discover.search(this.value)" aria-label="Search users" />
+        </div>
+        <div id="discover-list" class="user-list" role="list" aria-label="Users to discover"></div>
+      </section>
+
+      <!-- ── CREATE POST VIEW ── -->
+      <section id="page-create" class="page hidden">
+        <div class="page-header">
+          <h1 class="page-title">New Post</h1>
+        </div>
+        <form id="create-post-form" class="create-card" onsubmit="App.Posts.create(event)" novalidate>
+          <div class="create-header">
+            <div class="avatar sm" id="create-avatar"></div>
+            <div class="create-meta">
+              <span id="create-displayname" class="fw-600"></span>
+            </div>
+          </div>
+          <textarea
+            id="post-content"
+            class="post-textarea"
+            placeholder="What's on your mind?"
+            maxlength="500"
+            rows="5"
+            required
+            aria-label="Post content"
+          ></textarea>
+          <div class="char-counter"><span id="char-count">0</span>/500</div>
+          <div class="field-group">
+            <label for="post-image-url">Image URL <span class="label-optional">(optional)</span></label>
+            <input id="post-image-url" type="url" placeholder="https://example.com/image.jpg" />
+          </div>
+          <div id="image-preview-wrap" class="image-preview-wrap hidden">
+            <img id="image-preview" alt="Post image preview" />
+            <button type="button" class="remove-img-btn" onclick="App.Posts.removeImagePreview()" aria-label="Remove image">✕</button>
+          </div>
+          <p id="create-error" class="form-error" role="alert"></p>
+          <div class="create-actions">
+            <button type="submit" class="btn-primary" id="publish-btn">Publish</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ── PROFILE VIEW ── -->
+      <section id="page-profile" class="page hidden">
+        <div id="profile-content"></div>
+      </section>
+
+      <!-- ── POST DETAIL VIEW ── -->
+      <section id="page-post-detail" class="page hidden">
+        <div class="page-header">
+          <button class="btn-ghost back-btn" onclick="App.Router.back()" aria-label="Go back">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            Back
+          </button>
+        </div>
+        <div id="post-detail-content"></div>
+      </section>
+
+    </main>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav" role="navigation" aria-label="Mobile navigation">
+      <button class="mobile-nav-item active" id="mnav-feed"     onclick="App.Router.go('feed')"     aria-label="Home">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </button>
+      <button class="mobile-nav-item" id="mnav-discover" onclick="App.Router.go('discover')" aria-label="Discover">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </button>
+      <button class="mobile-nav-item" id="mnav-create"   onclick="App.Router.go('create')"   aria-label="New Post">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+      </button>
+      <button class="mobile-nav-item" id="mnav-profile"  onclick="App.Router.go('profile')"  aria-label="Profile">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- ═══════════════════════════ MODAL ═══════════════════════════ -->
+  <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal" id="modal-box">
+      <div class="modal-header">
+        <h2 id="modal-title" class="modal-title"></h2>
+        <button class="btn-ghost btn-icon modal-close" onclick="App.Modal.close()" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ TOAST ═══════════════════════════ -->
+  <div id="toast-container" role="region" aria-live="polite" aria-label="Notifications"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

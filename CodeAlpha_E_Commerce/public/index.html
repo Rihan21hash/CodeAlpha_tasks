@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexShop</title>
+  <meta name="description" content="Shop the latest electronics, clothing, and home goods at NexShop. Premium products, fast delivery, and great prices.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon" style="font-size:14px;font-weight:700;letter-spacing:-0.5px">NX</div>
+      <span class="logo-text">Nex<span class="logo-accent">Shop</span></span>
+    </a>
+    <div class="nav-search">
+      <span class="search-icon" style="font-size:13px;color:var(--color-text-muted)">&#x2315;</span>
+      <input type="text" id="search-input" placeholder="Search products…" autocomplete="off">
+    </div>
+    <div class="nav-links">
+      <div id="nav-auth-area" style="display:flex;align-items:center;gap:0.5rem"></div>
+      <a href="cart.html" class="nav-cart-btn" id="nav-cart">
+        Cart
+        <span class="cart-badge" style="display:none">0</span>
+      </a>
+    </div>
+    <button class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="container hero-content">
+    <h1>Shop the <span class="highlight">Future</span> of<br>Premium Shopping</h1>
+    <p>Discover curated products across Electronics, Clothing, and Home &amp; Garden — all at unbeatable prices with fast delivery.</p>
+    <div class="hero-cta">
+      <a href="#products" class="btn btn-primary btn-lg">Shop Now</a>
+      <a href="register.html" class="btn btn-secondary btn-lg">Join Free</a>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrapper" id="products">
+  <div class="container products-section">
+    <div class="section-header">
+      <h2 class="section-title">All Products</h2>
+      <select id="sort-select" class="filter-select">
+        <option value="">Sort: Featured</option>
+        <option value="price_asc">Price: Low to High</option>
+        <option value="price_desc">Price: High to Low</option>
+        <option value="newest">Newest First</option>
+      </select>
+    </div>
+    <div class="filters-bar" id="category-filters">
+      <button class="filter-chip active" data-cat="" onclick="filterByCategory(this, '')">All</button>
+    </div>
+    <div class="product-grid" id="product-grid"></div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo">
+          <div class="logo-icon" style="font-size:14px;font-weight:700">NX</div>
+          <span class="logo-text">Nex<span class="logo-accent">Shop</span></span>
+        </div>
+        <p>Your one-stop destination for premium products. Quality guaranteed, fast delivery, easy returns.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="index.html">All Products</a></li>
+          <li><a href="index.html?cat=Electronics">Electronics</a></li>
+          <li><a href="index.html?cat=Clothing">Clothing</a></li>
+          <li><a href="index.html?cat=Home+%26+Garden">Home &amp; Garden</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Account</h4>
+        <ul>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+          <li><a href="orders.html">My Orders</a></li>
+          <li><a href="cart.html">Cart</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Shipping Policy</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 NexShop. All rights reserved.</span>
+      <span>Secure Checkout &middot; Free Returns</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/products.js"></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — NexShop</title>
+  <meta name="description" content="Secure checkout for your NexShop order.">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .checkout-layout { display:grid; grid-template-columns:1fr 360px; gap:2rem; align-items:start; }
+    .checkout-panel { background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-xl); padding:2rem; }
+    @media(max-width:768px) { .checkout-layout { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon" style="font-size:14px;font-weight:700">NX</div>
+      <span class="logo-text">Nex<span class="logo-accent">Shop</span></span>
+    </a>
+    <div class="nav-links">
+      <div id="nav-auth-area" style="display:flex;align-items:center;gap:0.5rem"></div>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrapper">
+  <div class="container" style="padding-top:2rem;padding-bottom:4rem">
+    <h1 class="page-title" style="margin-bottom:2rem">Checkout</h1>
+
+    <div class="checkout-steps">
+      <div class="checkout-step" id="checkout-step-1">
+        <div class="step-circle" id="step-circle-1">1</div>
+        <div class="step-label">Shipping</div>
+      </div>
+      <div class="step-connector" id="connector-1"></div>
+      <div class="checkout-step" id="checkout-step-2">
+        <div class="step-circle" id="step-circle-2">2</div>
+        <div class="step-label">Payment</div>
+      </div>
+      <div class="step-connector" id="connector-2"></div>
+      <div class="checkout-step" id="checkout-step-3">
+        <div class="step-circle" id="step-circle-3">3</div>
+        <div class="step-label">Review</div>
+      </div>
+    </div>
+
+    <div class="checkout-layout">
+      <div>
+        <!-- STEP 1: Shipping -->
+        <div id="step-shipping" class="checkout-panel">
+          <h2 style="font-size:var(--font-size-xl);font-weight:700;margin-bottom:1.5rem">Shipping Information</h2>
+          <form onsubmit="submitShipping(event)">
+            <div style="display:flex;flex-direction:column;gap:1rem">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Full Name *</label>
+                  <input name="fullName" class="form-input" placeholder="Jane Doe" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Country *</label>
+                  <select name="country" class="form-select" required>
+                    <option value="">Select country</option>
+                    <option value="IN" selected>India</option>
+                    <option value="US">United States</option>
+                    <option value="UK">United Kingdom</option>
+                    <option value="CA">Canada</option>
+                    <option value="AU">Australia</option>
+                    <option value="DE">Germany</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Street Address *</label>
+                <input name="address" class="form-input" placeholder="123 Main Road, Flat 4B" required>
+              </div>
+              <div class="form-grid cols-3">
+                <div class="form-group">
+                  <label class="form-label">City *</label>
+                  <input name="city" class="form-input" placeholder="Mumbai" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">State *</label>
+                  <input name="state" class="form-input" placeholder="Maharashtra" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">PIN Code *</label>
+                  <input name="zip" class="form-input" placeholder="400001" required>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-full btn-lg">Continue to Payment</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- STEP 2: Payment -->
+        <div id="step-payment" class="checkout-panel" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+            <h2 style="font-size:var(--font-size-xl);font-weight:700">Payment Details</h2>
+            <span class="badge badge-success">Demo Mode</span>
+          </div>
+          <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:var(--radius-md);padding:0.75rem 1rem;margin-bottom:1.5rem;font-size:0.8rem;color:var(--color-text-muted)">
+            This is a demo checkout. No real payment will be processed.
+          </div>
+          <form onsubmit="submitPayment(event)">
+            <div style="display:flex;flex-direction:column;gap:1rem">
+              <div class="form-group">
+                <label class="form-label">Cardholder Name</label>
+                <input name="cardholderName" class="form-input" placeholder="Jane Doe">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Card Number</label>
+                <input name="cardNumber" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCardNumber(this)">
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Expiry</label>
+                  <input name="expiry" class="form-input" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">CVV</label>
+                  <input name="cvv" class="form-input" placeholder="•••" maxlength="4" type="password">
+                </div>
+              </div>
+              <div style="display:flex;gap:1rem">
+                <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+                <button type="submit" class="btn btn-primary btn-full btn-lg">Review Order</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- STEP 3: Review -->
+        <div id="step-review" class="checkout-panel" style="display:none">
+          <h2 style="font-size:var(--font-size-xl);font-weight:700;margin-bottom:1.5rem">Review Your Order</h2>
+          <div style="margin-bottom:1.5rem">
+            <h3 style="font-size:var(--font-size-sm);font-weight:600;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Shipping To</h3>
+            <div id="review-address" style="background:var(--color-surface-2);border-radius:var(--radius-md);padding:1rem;font-size:0.875rem;line-height:1.7"></div>
+          </div>
+          <div style="margin-bottom:1.5rem">
+            <h3 style="font-size:var(--font-size-sm);font-weight:600;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Items</h3>
+            <div id="review-items" style="display:flex;flex-direction:column;gap:0.75rem"></div>
+          </div>
+          <div style="display:flex;gap:1rem">
+            <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Back</button>
+            <button class="btn btn-accent btn-full btn-lg" id="place-order-btn" onclick="placeOrder()">
+              Place Order
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-summary">
+        <h3>Order Summary</h3>
+        <div class="summary-line"><span>Subtotal</span><span id="review-subtotal">—</span></div>
+        <div class="summary-line"><span>Shipping</span><span id="review-shipping">—</span></div>
+        <div class="summary-line"><span>Tax</span><span id="review-tax">—</span></div>
+        <div class="summary-line" style="border-top:1px solid var(--color-border);padding-top:1rem;margin-top:0.5rem">
+          <span class="summary-total">Total</span>
+          <span class="summary-total" id="review-total">—</span>
+        </div>
+        <div style="margin-top:1.5rem;padding:1rem;background:var(--color-surface-2);border-radius:var(--radius-md);font-size:0.8rem;color:var(--color-text-muted);line-height:1.8">
+          Free shipping on orders over &#8377;4,000<br>
+          30-day free returns<br>
+          Buyer protection guaranteed
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/checkout.js"></script>
+</body>
+</html>

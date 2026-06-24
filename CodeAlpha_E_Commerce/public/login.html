@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — NexShop</title>
+  <meta name="description" content="Login to your NexShop account.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="auth-page">
+  <div class="auth-card animate-fade-in">
+    <a href="index.html" class="auth-logo">
+      <div class="logo-icon" style="font-size:14px;font-weight:700">NX</div>
+      <span class="logo-text">Nex<span class="logo-accent">Shop</span></span>
+    </a>
+    <h2>Welcome Back</h2>
+    <p class="auth-sub">Sign in to your account to continue shopping</p>
+
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input id="email" name="email" type="email" class="form-input" placeholder="you@example.com" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input id="password" name="password" type="password" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full btn-lg" style="margin-top:0.5rem">
+          Sign In
+        </button>
+      </div>
+    </form>
+
+    <div class="auth-divider">or try a demo account</div>
+
+    <div style="display:flex;flex-direction:column;gap:0.75rem">
+      <button class="btn btn-secondary btn-full" onclick="fillDemo('demo@shop.com','user123')">
+        Demo User Account
+      </button>
+      <button class="btn btn-secondary btn-full" onclick="fillDemo('admin@shop.com','admin123')">
+        Admin Account
+      </button>
+    </div>
+
+    <div class="auth-switch">
+      Don't have an account? <a href="register.html">Create one free</a>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  redirectIfLoggedIn();
+  function fillDemo(email, pwd) {
+    document.getElementById('email').value = email;
+    document.getElementById('password').value = pwd;
+  }
+</script>
+</body>
+</html>

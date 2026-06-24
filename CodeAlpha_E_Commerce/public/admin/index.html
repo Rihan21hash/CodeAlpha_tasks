@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — NexShop</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .admin-layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - var(--nav-height)); }
+    .admin-sidebar {
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: var(--space-xl) var(--space-md);
+      position: sticky;
+      top: var(--nav-height);
+      height: calc(100vh - var(--nav-height));
+      overflow-y: auto;
+    }
+    .sidebar-section { margin-bottom: var(--space-xl); }
+    .sidebar-label { font-size: var(--font-size-xs); font-weight: 700; color: var(--color-text-dim); text-transform: uppercase; letter-spacing: 0.1em; padding: 0 var(--space-sm); margin-bottom: var(--space-sm); }
+    .tab-btn {
+      display: flex; align-items: center; gap: 8px;
+      width: 100%; padding: 9px var(--space-sm);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-sm); font-weight: 500;
+      color: var(--color-text-muted);
+      background: none; border: none; cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: left;
+    }
+    .tab-btn:hover { background: var(--color-surface-2); color: var(--color-text); }
+    .tab-btn.active { background: rgba(124,58,237,0.15); color: var(--color-primary-light); }
+    .admin-main { padding: var(--space-2xl); overflow: auto; }
+    .admin-tab { display: none; }
+    @media(max-width:768px) { .admin-layout { grid-template-columns: 1fr; } .admin-sidebar { display: none; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <div class="logo-icon" style="font-size:14px;font-weight:700">NX</div>
+      <span class="logo-text">Nex<span class="logo-accent">Shop</span></span>
+    </a>
+    <div style="display:flex;align-items:center;gap:0.5rem">
+      <span class="badge badge-warning">Admin Panel</span>
+    </div>
+    <div class="nav-links">
+      <div id="nav-auth-area" style="display:flex;align-items:center;gap:0.5rem"></div>
+      <a href="../index.html" class="btn btn-secondary btn-sm">Store Front</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrapper">
+  <div class="admin-layout">
+
+    <aside class="admin-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Dashboard</div>
+        <button class="tab-btn" data-tab="overview" onclick="showTab('overview')">Overview</button>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Catalog</div>
+        <button class="tab-btn" data-tab="products" onclick="showTab('products')">Products</button>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Sales</div>
+        <button class="tab-btn" data-tab="orders" onclick="showTab('orders')">Orders</button>
+      </div>
+      <div class="sidebar-section" style="margin-top:auto">
+        <button class="tab-btn" onclick="window.location.href=window.getAppPath('/index.html')">Go to Store</button>
+        <button class="tab-btn" onclick="logout()" style="color:var(--color-error)">Logout</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+
+      <!-- OVERVIEW TAB -->
+      <div class="admin-tab" id="tab-overview">
+        <div class="section-header" style="margin-bottom:2rem">
+          <h1 class="page-title">Dashboard Overview</h1>
+          <button class="btn btn-primary" onclick="loadDashboard()">Refresh</button>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon purple"></div>
+            <div class="stat-value" id="stat-products">—</div>
+            <div class="stat-label">Total Products</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon gold"></div>
+            <div class="stat-value" id="stat-orders">—</div>
+            <div class="stat-label">Total Orders</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue"></div>
+            <div class="stat-value" id="stat-users">—</div>
+            <div class="stat-label">Registered Users</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green"></div>
+            <div class="stat-value" id="stat-revenue">—</div>
+            <div class="stat-label">Total Revenue</div>
+          </div>
+        </div>
+        <div style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:2rem;margin-top:2rem">
+          <h3 style="margin-bottom:1rem;font-weight:700">Quick Actions</h3>
+          <div style="display:flex;gap:1rem;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="openAddProduct(); showTab('products')">+ Add New Product</button>
+            <button class="btn btn-secondary" onclick="showTab('orders')">View All Orders</button>
+            <a href="../index.html" class="btn btn-ghost">Visit Storefront</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCTS TAB -->
+      <div class="admin-tab" id="tab-products">
+        <div class="section-header" style="margin-bottom:2rem">
+          <h2 class="page-title">Products</h2>
+          <button class="btn btn-primary" onclick="openAddProduct()">+ Add Product</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Added</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody">
+              <tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--color-text-muted)">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ORDERS TAB -->
+      <div class="admin-tab" id="tab-orders">
+        <div class="section-header" style="margin-bottom:2rem">
+          <h2 class="page-title">All Orders</h2>
+          <button class="btn btn-secondary btn-sm" onclick="loadAdminOrders()">Refresh</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Update</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody">
+              <tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--color-text-muted)">Click Orders to load</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="product-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-title">Add Product</h2>
+      <button class="modal-close" onclick="closeModal('product-modal')">&times;</button>
+    </div>
+    <form id="product-form" onsubmit="saveProduct(event)" enctype="multipart/form-data">
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div class="form-group">
+          <label class="form-label">Product Name *</label>
+          <input name="name" class="form-input" placeholder="e.g. ProSound Wireless Headphones" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea name="description" class="form-textarea" rows="3" placeholder="Full product description..."></textarea>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Price (INR) *</label>
+            <input name="price" type="number" step="0.01" min="0" class="form-input" placeholder="0.00" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Stock Quantity *</label>
+            <input name="stockQuantity" type="number" min="0" class="form-input" placeholder="0" required>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-select">
+              <option value="">Select category</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Home & Garden">Home &amp; Garden</option>
+              <option value="Sports">Sports</option>
+              <option value="Books">Books</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">SKU</label>
+            <input name="sku" class="form-input" placeholder="e.g. ELEC-001">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Image URL (optional)</label>
+          <input name="imageUrl" class="form-input" placeholder="https://example.com/image.jpg">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Or Upload Image</label>
+          <input name="image" type="file" class="form-input" accept="image/*" style="padding:8px">
+        </div>
+        <div style="display:flex;gap:1rem;margin-top:0.5rem">
+          <button type="button" class="btn btn-ghost" onclick="closeModal('product-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-full">Save Product</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

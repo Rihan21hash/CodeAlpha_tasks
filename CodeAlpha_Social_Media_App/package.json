@@ -1,0 +1,12 @@
+{
+  "name": "nexus-social-media-app",
+  "version": "1.0.0",
+  "description": "Nexus — Full-stack social media app (Express + SQLite + Vanilla JS)",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev":   "cd backend && npm run dev",
+    "setup": "cd backend && npm install"
+  },
+  "keywords": ["social-media", "express", "sqlite"],
+  "license": "MIT"
+}
